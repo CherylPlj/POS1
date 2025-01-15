@@ -60,15 +60,34 @@
 		</div>
 		
 
-    <div class="box-info" style="margin-top: 0px;">
-        <h3>Summary</h3>
-			<p>Invoice No.: <span id="invoice-number">1</span></p>
-		<p>Customer: John Doe</p>	
-        <p>Subtotal: <span id="subtotal-product1">₱0.00</span></p>
-			<h3>
-				Total: <span id="total-amount">₱0.00</span>
-			</h3>
+  @*   <div class="box-info" style="margin-top: 0px;"> *@
+  @*       <h3>Summary</h3> *@
+		@* 	<p>Invoice No.: <span id="invoice-number">1</span></p> *@
+		@* <p>Customer: John Doe</p>	 *@
+  @*       <p>Subtotal: <span id="subtotal-product1">₱0.00</span></p> *@
+		@* 	<h3> *@
+		@* 		Total: <span id="total-amount">₱0.00</span> *@
+		@* 	</h3> *@
 
+
+		@* 	<label for="payment-amount">Payment Amount:</label> *@
+		@* 	<input type="number" id="payment-amount" name="payment-amount" step="0.01" min="0" oninput="calculateChange()"> *@
+
+		@* 	<label for="change-amount">Change:</label> *@
+		@* 	<input type="text" id="change-amount" name="change-amount" readonly> *@
+
+		@* 	<p>Payment Method: COD</p> *@
+		@* 	<br> *@
+
+		@* 	<button class="btn-checkout" onclick="checkout()">Checkout</button> *@
+  @*   </div> *@
+
+		<div class="box-info" style="margin-top: 0px;">
+			<h3>Summary</h3>
+			<p>Invoice No.: <span id="invoice-number">1</span></p>
+			<p>Customer: John Doe</p>
+			<p>Subtotal: <span id="subtotal-product1">₱0.00</span></p>
+			<h3>Total: <span id="total-amount">₱0.00</span></h3>
 
 			<label for="payment-amount">Payment Amount:</label>
 			<input type="number" id="payment-amount" name="payment-amount" step="0.01" min="0" oninput="calculateChange()">
@@ -77,10 +96,43 @@
 			<input type="text" id="change-amount" name="change-amount" readonly>
 
 			<p>Payment Method: COD</p>
-			<br>
 
+			<h4>Order Type:</h4>
+			<label>
+				<input type="radio" name="order-type" value="delivery" onclick="toggleOrderDetails('delivery')"> Delivery
+			</label>
+			<label>
+				<input type="radio" name="order-type" value="pickup" onclick="toggleOrderDetails('pickup')"> Pick Up
+			</label>
+
+			<div id="delivery-details" style="display: none; margin-top: 10px;">
+				<h4>Delivery Details</h4>
+				<label for="delivery-address">Address:</label>
+				<input type="text" id="delivery-address" name="delivery-address" required><br>
+
+				<label for="delivery-phone">Phone:</label>
+				<input type="text" id="delivery-phone" name="delivery-phone" required><br>
+
+				<label for="contact-person">Contact Person:</label>
+				<input type="text" id="contact-person" name="contact-person" required><br>
+			</div>
+
+			<div id="pickup-details" style="display: none; margin-top: 10px;">
+				<h4>Pick Up Details</h4>
+				<label for="pickup-date">Date:</label>
+				<input type="date" id="pickup-date" name="pickup-date" required><br>
+
+				<label for="pickup-time">Time Frame:</label>
+				<select id="pickup-time" name="pickup-time" required>
+					<option value="morning">Morning (8 AM - 12 PM)</option>
+					<option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+					<option value="evening">Evening (4 PM - 8 PM)</option>
+				</select>
+			</div>
+
+			<br>
 			<button class="btn-checkout" onclick="checkout()">Checkout</button>
-    </div>
+		</div>
 
 </div>
 </div>
@@ -104,4 +156,26 @@
 			const change = totalAmount - paymentAmount;
 			document.getElementById('change-amount').value = change >= 0 ? change.toFixed(2) : '0.00';
 		}
+
+		// script for delivery or pickup
+
+		function toggleOrderDetails(orderType) {
+		if (orderType === 'delivery') {
+			document.getElementById('delivery-details').style.display = 'block';
+			document.getElementById('pickup-details').style.display = 'none';
+		} else if (orderType === 'pickup') {
+			document.getElementById('delivery-details').style.display = 'none';
+			document.getElementById('pickup-details').style.display = 'block';
+			setMinPickupDate(); // Set minimum pick-up date when showing pick-up details
+		}
+	}
+
+	function setMinPickupDate() {
+		const today = new Date();
+		const formattedDate = today.toISOString().split('T')[0];
+		document.getElementById('pickup-date').setAttribute('min', formattedDate);
+	}
+
+	// Set the minimum pick-up date on page load
+	window.onload = setMinPickupDate;
 	</script>

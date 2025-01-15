@@ -37,10 +37,11 @@ namespace POS1.Controllers
             return View("LoginPage");
         }
 
-        public IActionResult RegisterPage()
-        {
-            return View(); // Return the view for the register page
-        }
+
+        //public IActionResult RegisterPage()
+        //{
+        //    return View(); // Return the view for the register page
+        //}
     }
 }
        

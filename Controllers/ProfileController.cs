@@ -81,14 +81,12 @@ public class ProfileController : Controller
 
         if (profile != null && user != null)
         {
-            // Update profile information
-            profile.FullName = model.FullName;
+            // Update only editable fields (excluding FullName)
             profile.PhoneNumber = model.PhoneNumber;
             profile.Address = model.Address;
             profile.Email = model.Email;
 
             // Update email if changed
-            user.FullName = model.FullName;
             user.Email = model.Email;
 
             _context.SaveChanges();

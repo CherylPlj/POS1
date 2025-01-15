@@ -188,6 +188,16 @@ function removeItem(productId) {
 	}
 }
 
+function removeItem(orderId) {
+	let row = document.getElementById(`row-${orderId}`);
+	if (row) {
+		row.remove();
+		updateTotal();
+	} else {
+		console.error(`Row with ID 'row-${orderId}' not found.`);
+	}
+}
+
 // Mock checkout function
 function checkout() {
 	alert("Checkout complete!");
