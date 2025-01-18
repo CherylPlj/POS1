@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Inventory service
 builder.Services.AddHttpClient<EcommerceService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5095/"); // Replace with Inventory System URL
+    client.BaseAddress = new Uri("https://gizmodeecommerce.azurewebsites.net/"); // Replace with Ecommerce System URL
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -54,13 +54,15 @@ app.UseSession(); // This should come before UseAuthorization
 
 app.UseAuthorization();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}"); 
-
+// THIS IS THE ORIGINAL, BRING BACK THIS:
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=LoginPage}/{id?}");
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Sales}/{action=Sales}");
+
 
 
 

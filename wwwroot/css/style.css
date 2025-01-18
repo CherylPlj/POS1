@@ -947,3 +947,59 @@ body {
             overflow-y: auto;
         }
 }
+
+
+
+/* Container for password input and icon */
+.password-container {
+    position: relative; /* Enables absolute positioning for the toggle button */
+    margin-bottom: 1.5rem;
+}
+
+/* Input Field Styling */
+.password-input {
+    width: 100%;
+    padding: 0.8rem 2.5rem 0.8rem 1rem; /* Space for the toggle icon */
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+    transition: border-color 0.2s ease-in-out;
+    line-height: 1.5; /* Ensure consistent height alignment */
+}
+
+    /* Highlight on focus */
+    .password-input:focus {
+        outline: none;
+        border-color: #4a90e2; /* Highlight color on focus */
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); /* Light blue glow */
+    }
+
+/* Toggle Password Visibility Button */
+.toggle-password {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    right: 15px;
+    transform: translateY(-50%); /* Align with middle of input field */
+    cursor: pointer;
+    color: #888;
+    font-size: 1.2rem;
+    transition: color 0.2s ease-in-out;
+}
+
+    /* Hover effect for icon */
+    .toggle-password:hover {
+        color: #4a90e2; /* Change color on hover */
+    }
+
+    /* Icon Styling */
+    .toggle-password i {
+        display: inline-block;
+        font-size: 1.5rem;
+    }
+
+/* Adjustments for mobile devices */
+@media (max-width: 768px) {
+    .password-input {
+        padding-right: 2.2rem; /* Adjust padding for smaller screens */
+    }
+}

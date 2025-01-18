@@ -81,13 +81,19 @@ public class ProfileController : Controller
 
         if (profile != null && user != null)
         {
-            // Update only editable fields (excluding FullName)
+            // Update profile information
+            profile.FullName = user.FullName;
             profile.PhoneNumber = model.PhoneNumber;
             profile.Address = model.Address;
             profile.Email = model.Email;
 
             // Update email if changed
+            //user.FullName = model.FullName;
             user.Email = model.Email;
+            // Update session with the new email
+            HttpContext.Session.SetString("UserEmail", user.Email);
+
+            //HttpContext.Session.SetString("UserFullName", user.FullName);
 
             _context.SaveChanges();
             TempData["SuccessMessage"] = "Profile updated successfully!";
@@ -102,7 +108,6 @@ public class ProfileController : Controller
         return View();
     }
 
-   
     // Change or Update the password
     [HttpPost]
     public IActionResult ChangePassword(string currentPassword, string newPassword, string confirmPassword)
@@ -121,8 +126,8 @@ public class ProfileController : Controller
             return RedirectToAction("ChangePasswordPage");
         }
 
-        // Check if the current password matches the user's password (this is without hashing)
-        if (user.Password != currentPassword)
+        // Check if the current password matches the hashed password (using BCrypt)
+        if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.Password))  // Compare hashed password
         {
             TempData["ErrorMessage"] = "Current password is incorrect.";
             return RedirectToAction("ChangePasswordPage");
@@ -135,13 +140,14 @@ public class ProfileController : Controller
             return RedirectToAction("ChangePasswordPage");
         }
 
-        // Update the password without hashing it in the Users table
-        user.Password = newPassword;
+        // Hash the new password before saving it to the database
+        user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);  // Hash the new password
 
         _context.SaveChanges();
 
         TempData["SuccessMessage"] = "Password changed successfully!";
         return RedirectToAction("ProfilePage");
     }
+
 
 }

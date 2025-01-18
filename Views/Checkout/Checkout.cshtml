@@ -1,11 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Checkout";
+	ViewData["Title"] = "Checkout";
 	Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <div class="head-title">
 	<div class="left">
-		<h1> Checkout</h1>	
+		<h1> Checkout</h1>
 	</div>
 	<div class="right">
 		<p id="current-date" style="margin: 0; font-size: 16px; color: #555;"></p>
@@ -17,13 +18,13 @@
 	<div class="table-data">
 		<div class="order">
 			<div class="head">
-				<h3>Shopping Cart</h3>		
-				<form action="#">
+				<h3>Shopping Cart</h3>
+				@* <form action="#">
 					<div class="form-input">
 						<input type="search" placeholder="Search..."> <!--Search for product(name, id) and add to cart-->
 						<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
 					</div>
-				</form>  
+				</form>  *@ 
 				<i class='bx bx-filter'></i> <!--Filter cart by name or price-->
 			</div>
 			<table>
@@ -37,145 +38,82 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr id="row-product1">
-						<td class="product-name">Mouse</td>
-						<td id="price-product1">300</td>
-						<td>
-							<button onclick="decreaseQuantity('product1')">−</button>
-							<span id="quantity-product1">1</span>
-							<button onclick="increaseQuantity('product1')">+</button>
-						</td>
-						<td id="subtotal-product1">₱0.00</td> <!-- Initial subtotal will be calculated in JavaScript -->
-						<td>
-							<button onclick="removeItem('product1')">
-								<a href="#" class="btn-delete">
-									<i class='bx bxs-trash'></i> <!--Delete-->
-								</a>
-							</button>
-							
-						</td>
-					</tr>
+					@foreach (var item in Model.OrderItems)
+					{
+						<tr>
+							<td class="product-name">@item.ProductName</td>
+							<td>@item.Price.ToString("C")</td>
+							<td>@item.Quantity</td>
+							<td>@item.Subtotal.ToString("C")</td>
+							<td>
+								<button onclick="removeItem('@item.ProductName')">
+									<a href="#" class="btn-delete">
+										<i class='bx bxs-trash'></i> <!-- Delete -->
+									</a>
+								</button>
+							</td>
+						</tr>
+					}
 				</tbody>
 			</table>
 		</div>
-		
-
-  @*   <div class="box-info" style="margin-top: 0px;"> *@
-  @*       <h3>Summary</h3> *@
-		@* 	<p>Invoice No.: <span id="invoice-number">1</span></p> *@
-		@* <p>Customer: John Doe</p>	 *@
-  @*       <p>Subtotal: <span id="subtotal-product1">₱0.00</span></p> *@
-		@* 	<h3> *@
-		@* 		Total: <span id="total-amount">₱0.00</span> *@
-		@* 	</h3> *@
 
 
-		@* 	<label for="payment-amount">Payment Amount:</label> *@
-		@* 	<input type="number" id="payment-amount" name="payment-amount" step="0.01" min="0" oninput="calculateChange()"> *@
-
-		@* 	<label for="change-amount">Change:</label> *@
-		@* 	<input type="text" id="change-amount" name="change-amount" readonly> *@
-
-		@* 	<p>Payment Method: COD</p> *@
-		@* 	<br> *@
-
-		@* 	<button class="btn-checkout" onclick="checkout()">Checkout</button> *@
-  @*   </div> *@
-
-		<div class="box-info" style="margin-top: 0px;">
+		<div class="box-info" style="margin-top: 0px; max-width:350px;">
 			<h3>Summary</h3>
-			<p>Invoice No.: <span id="invoice-number">1</span></p>
-			<p>Customer: John Doe</p>
-			<p>Subtotal: <span id="subtotal-product1">₱0.00</span></p>
-			<h3>Total: <span id="total-amount">₱0.00</span></h3>
-
-			<label for="payment-amount">Payment Amount:</label>
-			<input type="number" id="payment-amount" name="payment-amount" step="0.01" min="0" oninput="calculateChange()">
-
-			<label for="change-amount">Change:</label>
-			<input type="text" id="change-amount" name="change-amount" readonly>
-
-			<p>Payment Method: COD</p>
-
-			<h4>Order Type:</h4>
-			<label>
-				<input type="radio" name="order-type" value="delivery" onclick="toggleOrderDetails('delivery')"> Delivery
-			</label>
-			<label>
-				<input type="radio" name="order-type" value="pickup" onclick="toggleOrderDetails('pickup')"> Pick Up
-			</label>
-
-			<div id="delivery-details" style="display: none; margin-top: 10px;">
-				<h4>Delivery Details</h4>
-				<label for="delivery-address">Address:</label>
-				<input type="text" id="delivery-address" name="delivery-address" required><br>
-
-				<label for="delivery-phone">Phone:</label>
-				<input type="text" id="delivery-phone" name="delivery-phone" required><br>
-
-				<label for="contact-person">Contact Person:</label>
-				<input type="text" id="contact-person" name="contact-person" required><br>
-			</div>
-
-			<div id="pickup-details" style="display: none; margin-top: 10px;">
-				<h4>Pick Up Details</h4>
-				<label for="pickup-date">Date:</label>
-				<input type="date" id="pickup-date" name="pickup-date" required><br>
-
-				<label for="pickup-time">Time Frame:</label>
-				<select id="pickup-time" name="pickup-time" required>
-					<option value="morning">Morning (8 AM - 12 PM)</option>
-					<option value="afternoon">Afternoon (12 PM - 4 PM)</option>
-					<option value="evening">Evening (4 PM - 8 PM)</option>
-				</select>
-			</div>
-
+			<p>Customer: @Model.CustomerName</p>
+			<h3>Total: <span id="total-amount">@Model.TotalAmount.ToString("C")</span></h3>
+			<p>Payment Method: @Model.PaymentMethod</p>
 			<br>
-			<button class="btn-checkout" onclick="checkout()">Checkout</button>
+
+			<form asp-action="CheckoutOrder" method="post" style="display: flex;flex-direction: column;align-items: stretch;">
+				<input type="hidden" name="OrderId" value="@Model.OrderId" />
+				<label for="payment-amount">Payment Amount:</label>
+				<input type="number" id="PaidAmount" name="PaidAmount" step="0.01" min="0">
+				<label for="change-amount">Change:</label>
+				<input type="number" id="Change" name="Change" readonly>
+				<button type="submit" class="btn-checkout" style="margin-left:0;">Checkout</button>
+			</form>
 		</div>
 
+	</div>
 </div>
-</div>
 
-	<script>
-		// JavaScript to update the current date
-		function updateCurrentDate() {
-			const now = new Date();
-			const dateString = now.toLocaleString(); // Formats date and time based on user's locale
-			document.getElementById('current-date').textContent = dateString;
-		}
-
-		updateCurrentDate(); // Initial call
-		setInterval(updateCurrentDate, 1000); // Update every second
-
-
-		//Js for change calcu
-			function calculateChange() {
-			const totalAmount = parseFloat(document.getElementById('total-amount').value) || 0;
-			const paymentAmount = parseFloat(document.getElementById('payment-amount').value) || 0;
-			const change = totalAmount - paymentAmount;
-			document.getElementById('change-amount').value = change >= 0 ? change.toFixed(2) : '0.00';
-		}
-
-		// script for delivery or pickup
-
-		function toggleOrderDetails(orderType) {
-		if (orderType === 'delivery') {
-			document.getElementById('delivery-details').style.display = 'block';
-			document.getElementById('pickup-details').style.display = 'none';
-		} else if (orderType === 'pickup') {
-			document.getElementById('delivery-details').style.display = 'none';
-			document.getElementById('pickup-details').style.display = 'block';
-			setMinPickupDate(); // Set minimum pick-up date when showing pick-up details
-		}
+<script>
+	// JavaScript to update the current date
+	function updateCurrentDate() {
+		const now = new Date();
+		const dateString = now.toLocaleString(); // Formats date and time based on user's locale
+		document.getElementById('current-date').textContent = dateString;
 	}
 
-	function setMinPickupDate() {
-		const today = new Date();
-		const formattedDate = today.toISOString().split('T')[0];
-		document.getElementById('pickup-date').setAttribute('min', formattedDate);
-	}
+	updateCurrentDate(); // Initial call
+	setInterval(updateCurrentDate, 1000); // Update every second
 
-	// Set the minimum pick-up date on page load
-	window.onload = setMinPickupDate;
-	</script>
+
+	// Wait for the page to load
+	 document.addEventListener('DOMContentLoaded', function () {
+			const paidAmountInput = document.getElementById('PaidAmount');
+			const changeInput = document.getElementById('Change');
+			const totalAmount = parseFloat('@Model.TotalAmount'); // TotalAmount from the view
+
+		// Function to update the change when paid amount is entered
+		function updateChange() {
+			const paidAmount = parseFloat(paidAmountInput.value) || 0;
+			const change = paidAmount - totalAmount;
+			changeInput.value = change >= 0 ? change.toFixed(2) : 0;
+		}
+
+		// Add event listener to the PaidAmount input to update change dynamically
+		paidAmountInput.addEventListener('input', updateChange);
+	});
+
+
+	// //Js for change calcu
+	// 	function calculateChange() {
+	// 	const totalAmount = parseFloat(document.getElementById('total-amount').value) || 0;
+	// 	const paymentAmount = parseFloat(document.getElementById('payment-amount').value) || 0;
+	// 	const change = totalAmount - paymentAmount;
+	// 	document.getElementById('change-amount').value = change >= 0 ? change.toFixed(2) : '0.00';
+	// }
+</script>

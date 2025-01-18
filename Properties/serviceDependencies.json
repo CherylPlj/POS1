@@ -8,10 +8,6 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:DatabaseConnection"
-    },
-    "mssql3": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:DatabaseConnection1"
     }
   }
 }

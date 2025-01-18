@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using POS1.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,17 @@ namespace POS1.Services
     public class EcommerceService
     {
         private readonly HttpClient _httpClient;
+        private readonly ApplicationDbContext _context;
 
-        public EcommerceService(HttpClient httpClient)
+        public EcommerceService(HttpClient httpClient, ApplicationDbContext context)
         {
             _httpClient = httpClient;
+            _context = context;
         }
+
+    }
+}
+
 
         /*public async Task<bool> UpdateProductInEcommerceSystem(Product product)
         {
@@ -62,5 +69,4 @@ namespace POS1.Services
             // var response = await _httpClient.PostAsync("https://Inventory1.example.com/api/products/edit", content);
 
             // return response.IsSuccessStatusCode;
-        }
-    }
+   

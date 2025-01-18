@@ -25,17 +25,14 @@
                 <form asp-action="UpdateProfile" method="post">
                     <!-- Full Name -->
                     <div class="form-group mb-4">
-                    @*     <label for="FullName" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Full Name</label> *@
-                    @*     <input type="text" class="form-control form-control-lg" id="FullName" name="FullName" value="@Model.FullName" disabled> *@
-                    @* </div> *@
-                        <p style="font-size: 1.1rem; color: #555;"><strong>Full Name: </strong>@Model.FullName</p>
-                    
+                        <p style="font-size: 1.1rem; color: #555;"><strong>Full Name: </strong>@Context.Session.GetString("UserFullName")</p>
+                        <input type="hidden" name="FullName"/>
                     </div>
 
                     <!-- Email -->
                     <div class="form-group mb-4">
                         <label for="Email" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Email</label>
-                        <input type="email" class="form-control form-control-lg" id="Email" name="Email" value="@Model.Email" required>
+                        <input type="email" class="form-control form-control-lg" id="Email" name="Email" value="@Context.Session.GetString("UserEmail")" required>
                     </div>
 
                     <!-- Phone Number -->
@@ -68,6 +65,19 @@
         </div>
     </div>
 </div>
+@* @if (TempData["ErrorMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-danger mt-3 text-center"> *@
+@*         @TempData["ErrorMessage"] *@
+@*     </div> *@
+@* } *@
+
+@* @if (TempData["SuccessMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-success mt-3 text-center"> *@
+@*         @TempData["SuccessMessage"] *@
+@*     </div> *@
+@* } *@
 
 <!-- Fade-In Animation Script -->
 <script>

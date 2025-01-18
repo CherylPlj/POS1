@@ -25,23 +25,23 @@ namespace POS1.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult LoginPage(string email, string password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
-            if (user != null)
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))  // Compare the entered password with the hashed password
             {
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
                 HttpContext.Session.SetString("UserFullName", user.FullName);
+                HttpContext.Session.SetString("UserEmail", user.Email);
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.ErrorMessage = "Invalid email or password. Please check your credentials or contact your administrator";
+            ViewBag.ErrorMessage = "Invalid login credentials. Please try again.";
             return View("LoginPage");
         }
 
-
-        //public IActionResult RegisterPage()
-        //{
-        //    return View(); // Return the view for the register page
-        //}
+        public IActionResult RegisterPage()
+        {
+            return View(); // Return the view for the register page
+        }
     }
 }
        

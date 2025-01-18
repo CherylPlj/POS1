@@ -5,6 +5,15 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
+
 
 
 	<div class="head-title">
@@ -19,117 +28,52 @@
 			<div class="order">
 				<div class="head">
 					<h3>Transactions</h3>
-					<i class='bx bx-search'></i>
+					<i class='bx bx-search'></i>    
 					<i class='bx bx-filter'></i>
 				</div>
-				<table>
-					<thead>
-						<tr>
-						<!--<th>Invoice No.</th>-->
-					
-							<th>Customer Name</th> <!--From Ecommerce-->
-							<th>Date</th>
-							<th>Total Amount</th>
-							<th>Payment Method</th>
-							<th>Payment Status</th>
-							<th>Order Status</th>
-							<th>View Invoice</th> <!--Full Invoice with the list of products, quantity, subtotal, totalAmount, paymentMethod, deliveryAddress, phoneNumber-->
-							<th>Action</th>
-						</tr>
-					</thead>
-
-					<tbody>
-					<tr id="row-order1">
-						<!--<td>
-								<p>1</p></td> InvoiceNo-->
-							
-							<td>
-								<p>John Doe</p> <!--CustomerName-->
-							</td>
-							<td>01-03-2025</td> <!--Date-->
-							<td style ="text-align: center">₱300</td> <!--TotalAmount-->
-							<td>COD</td> <!--PaymentMethod-->
-					
-						<td><span class="status completed">Paid</span></td> <!--PaymentStatus-->
-						<td><span class="status delivered">Delivered</span></td> <!--OrderStatus-->
-						
-							
-							<td>
-								<a href="#" class="btn-download">
-									<i class='bx bxs-receipt'></i>
-									<span class="text">View Invoice</span>
-								</a>
-							</td> <!--ViewInvoice-->
-							<td>
-								<a href="#" class="btn-edit">
-									<i class='bx bxs-pencil'></i> <!--Edit-->
-								</a>
-							<a href="#" class="btn-delete" onclick="removeItem('order1')">
-									<i class='bx bxs-trash'></i> <!--Delete-->
-
-								</a>
-							</td> <!--Action: Update or Delete-->
-						</tr>
-
-					<tr id="row-order2">
-							<!-- <td>
-							<p>2</p> </td> InvoiceNo-->
-							
-							<td>
-								<p>Anne Lee</p> <!--CustomerName-->
-							</td>
-							<td>01-05-2025</td> <!--Date-->
-							<td style="text-align: center">₱5,000</td> <!--TotalAmount-->
-							<td>Card</td> <!--PaymentMethod-->
-							<td><span class="status completed">Paid</span></td> <!--PaymentStatus-->
-							<td><span class="status completed">Processed</span></td> <!--OrderStatus-->
-							<td>
-								<a href="#" class="btn-download">
-									<i class='bx bxs-receipt'></i>
-									<span class="text">View Invoice</span>
-								</a>
-							</td> <!--ViewInvoice-->
-							<td>
-								<a href="#" class="btn-edit">
-									<i class='bx bxs-pencil'></i> <!--Edit-->
-								</a>
-							<a href="#" class="btn-delete" onclick="removeItem('order2')">
-									<i class='bx bxs-trash'></i> <!--Delete-->
-
-								</a>
-							</td> <!--Action: Update or Delete-->
-						</tr>
-
-					<tr id="row-order3">
-							<!-- <td>
-							<p>3</p> </td>--InvoiceNo-->
-							
-							<td>
-								<p>Zin Bal</p> <!--CustomerName-->
-							</td>
-							<td>01-05-2025</td> <!--Date-->
-							<td style="text-align: center">₱10,000</td> <!--TotalAmount-->
-							<td>Card</td> <!--PaymentMethod-->
-							<td><span class="status completed">Paid</span></td> <!--PaymentStatus-->
-							<td><span class="status pending">Pending</span></td> <!--OrderStatus-->
-							<td>
-								<a href="#" class="btn-download">
-									<i class='bx bxs-receipt'></i>
-									<span class="text">View Invoice</span>
-								</a>
-							</td> <!--ViewInvoice-->
-							<td>
-								<a href="#" class="btn-edit">
-									<i class='bx bxs-pencil'></i> <!--Edit-->
-								</a>
-							<a href="#" class="btn-delete" onclick="removeItem('order3')">
-									<i class='bx bxs-trash'></i> <!--Delete-->
-
-								</a>
-							</td> <!--Action: Update or Delete-->
-						</tr>
-					</tbody>
-				</table>
+                <table class="table table-bordered table-hover table-striped text-center orders-table">
+                    <thead class="table-dark orders-table">
+                        <tr>
+                            <th class="orders-table" style="text-align:center;">Customer Name</th>
+                            <th class="orders-table" style="text-align:center;">Date</th>
+                            <th class="orders-table" style="text-align:center;">Total Amount</th>
+                            <th class="orders-table" style="text-align:center;">Payment Method</th>
+                            <th class="orders-table" style="text-align:center;">Payment Status</th>
+                            <th class="orders-table" style="text-align:center;">Order Status</th>
+                            <th class="orders-table" style="text-align:center;">Checkout Order</th>
+                            <th class="orders-table" style="text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>@order.CustName</td>
+                                <td>@order.Date?.ToString("MM-dd-yyyy")</td>
+                                <td>₱@order.TotalAmount</td>
+                                <td>@order.PayMethod</td>
+                                <td>@order.PaymentStatus</td>
+                                <td>@order.OrdStatus</td>
+                                <td>
+                                    <a asp-controller="Checkout" asp-action="Checkout" asp-route-id="@order.Id" class="btn btn-primary btn-sm">
+                                        <i class='bx bxs-receipt'></i> Checkout
+                                    </a>
+                                </td>
+                                <td>
+                                <!-- Form for deleting the order -->
+                                <form asp-controller="Orders" asp-action="DeleteOrder" asp-route-id="@order.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this order?');">
+                                        <i class='bx bxs-trash'></i> Delete
+                                    </button>
+                                </form>
+                                   @*  <a asp-controller="Orders" asp-action="DeleteOrder" asp-route-id="@order.Id" class="btn btn-danger btn-sm">
+                                        <i class='bx bxs-trash'></i> Delete
+                                    </a> *@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 			</div>
     </div>       
 </div>

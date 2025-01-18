@@ -18,7 +18,9 @@
             font-size: 1.8rem;
             margin: 0;
         }
-
+        h3 {
+        font-size: 1.5rem;
+        }
         .d-flex.align-items-center a {
             margin-right: 10px;
             color: inherit;
@@ -113,6 +115,33 @@
         <h1 class="fw-bold" style="color: #fca311;">My Profile</h1>
     </div>
 
+@* @if (ViewData["ErrorMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-danger mt-3 text-center"> *@
+@*         @ViewData["ErrorMessage"] *@
+@*     </div> *@
+@* } *@
+
+@* @if (ViewData["SuccessMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-success mt-3 text-center"> *@
+@*         @ViewData["SuccessMessage"] *@
+@*     </div> *@
+@* } *@
+
+@* @if (TempData["ErrorMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-danger mt-3 text-center"> *@
+@*         @TempData["ErrorMessage"] *@
+@*     </div> *@
+@* } *@
+
+@* @if (TempData["SuccessMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-success mt-3 text-center"> *@
+@*         @TempData["SuccessMessage"] *@
+@*     </div> *@
+@* } *@
     <!-- Profile Details in a Card -->
 <div class="checkout-container" >
     <div class="card" style="background-color: #F9F9F9">
@@ -120,11 +149,13 @@
                 <div class="profile-container">
                     <div class="profile-info">
                         <h3>Full Name: </h3>
-                        <p>@Model.FullName</p>
+                    <p>@Context.Session.GetString("UserFullName")</p>
                     </div>
                     <div class="profile-info">
                         <h3>Email: </h3>
-                        <p>@Model.Email</p>
+                    <p>
+                        @Context.Session.GetString("UserEmail")
+                    </p>
                     </div>
                     <div class="profile-info">
                         <h3>Phone Number: </h3>

@@ -1,5 +1,6 @@
 ﻿// Controllers/OrdersController.cs
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using POS1.Models;
 using System;
 using System.Collections.Generic;
@@ -9,27 +10,74 @@ namespace YourApp.Controllers
 {
     public class OrdersController : Controller
     {
-        public IActionResult Orders()
+        private readonly ApplicationDbContext _context;
+
+        public OrdersController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
         }
 
-        // This is a mock list of orders; in a real application, it would be fetched from a database.
-        private static List<Order> _orders = new List<Order>
+        public IActionResult Orders()
         {
-            new Order { OrderId = 1, CustomerName = "John Doe", OrderDate = DateTime.Now.AddDays(-2), TotalAmount = 150.00m, PaymentMethod = "Credit Card", PaymentStatus = "Paid", OrderStatus = "Completed", InvoiceId = 101 },
-            new Order { OrderId = 2, CustomerName = "Jane Smith", OrderDate = DateTime.Now.AddDays(-1), TotalAmount = 80.50m, PaymentMethod = "PayPal", PaymentStatus = "Unpaid", OrderStatus = "Pending", InvoiceId = 102 },
-            new Order { OrderId = 3, CustomerName = "Alice Johnson", OrderDate = DateTime.Now.AddDays(-5), TotalAmount = 200.75m, PaymentMethod = "Bank Transfer", PaymentStatus = "Paid", OrderStatus = "Processing", InvoiceId = 103 }
-        };
+            // Fetch all orders with necessary details
+            var orders = _context.Orders
+                .Where(o => !o.IsDeleted && o.OrderStatus == "Order Placed") // Exclude soft-deleted orders and filter by OrderStatus
+                .Include(o => o.Customer)  // Load associated Customer
+                .Include(o => o.Invoices)  // Include Invoices for payment status
+                .Select(o => new
+                {
+                    Id = o.OrderId,
+                    // Find the customer name by matching CustomerId in Orders with EcomId in Customers
+                    CustName = _context.Customers
+                        .Where(c => c.EcomId == o.CustomerId) // Match EcomId with CustomerId
+                        .Select(c => c.CustomerName)
+                        .FirstOrDefault() ?? "No Customer",  // Safeguard for null values
+                    Date = o.CreatedAt,
+                    TotalAmount = o.TotalPrice,
+                    PayMethod = o.PaymentMethod,
+                    // Handle null invoices explicitly in the projection
+                    PaymentStatus = o.Invoices.Any() ? o.Invoices.FirstOrDefault().PaymentStatus : "Not Available",
+                    OrdStatus = o.OrderStatus
+                })
+                .ToList();
+
+            return View(orders);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteOrder(int id)
+        {
+            // Fetch the order by ID
+            var order = _context.Orders.FirstOrDefault(o => o.OrderId == id);
+
+            if (order == null)
+            {
+                // Handle the case where the order does not exist
+                return NotFound();
+            }
+
+            // Set the OrderStatus to "Cancelled"
+            order.OrderStatus = "Cancelled";
+
+            // Soft delete the order by setting IsDeleted to true
+            order.IsDeleted = true;
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            // Redirect back to the Orders view
+            return RedirectToAction("Orders");
+        }
+
+
 
         // Display a list of orders
         public IActionResult Index()
         {
-            var orders = _orders;
-            return View(orders);
+            return View();
         }
-       
-          
+
+
 
         // View an individual invoice by InvoiceId (In a real application, you would fetch the invoice from a database)
         public IActionResult ViewInvoice(int invoiceId)
