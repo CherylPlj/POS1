@@ -46,6 +46,11 @@
                 <div class="form-group">
                     <label for="ConfirmPassword">Confirm Password</label>
                     <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password', this)"
+                          title="Show/Hide Password"
+                          style="position: absolute; top: 38px; right: 15px; margin-right: 10px; cursor: pointer;">
+                        <i class="bx bx-hide"></i>
+                    </span>
                 </div>
                 <button type="submit" class="btn btn-primary">Register</button>
 

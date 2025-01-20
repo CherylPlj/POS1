@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using POS1.Models;
+using POS1.Services;
 using System.Linq;
 
 namespace POS1.Controllers
@@ -81,8 +82,16 @@ namespace POS1.Controllers
             order.OrderStatus = "Order Confirmed";
 
             // Get the current user from the session
-            var cashierId = HttpContext.Session.GetString("UserId");
+            var cashierId = HttpContext.Session.GetString("UserId") ?? "0"; // Default to "0" if null
             var cashierFullName = HttpContext.Session.GetString("UserFullName");
+
+            // Parse the cashierId to int
+            int parsedCashierId;
+            if (!int.TryParse(cashierId, out parsedCashierId))
+            {
+                // Handle the error, e.g., return a BadRequest response
+                return BadRequest("Invalid UserId in the session.");
+            }
 
             // Calculate the change amount
             decimal? change = model.PaidAmount - order.TotalPrice;
@@ -91,7 +100,7 @@ namespace POS1.Controllers
             var transaction = new Transaction
             {
                 OrderId = model.OrderId,
-                CashierId = int.Parse(cashierId),  // Assuming UserId is stored as a string and needs to be parsed to int
+                CashierId = parsedCashierId,  // Assuming UserId is stored as a string and needs to be parsed to int
                 TotalAmount = order.TotalPrice,
                 PaidAmount = model.PaidAmount,
                 Change = change,
@@ -105,6 +114,7 @@ namespace POS1.Controllers
             _context.SaveChanges(); // Save to get the generated TransactionId
 
             // Create TransactionItems for the order's OrderItems
+            var stockUpdates = new List<ProductStockUpdateModel>();
             foreach (var orderItem in order.OrderItems)
             {
                 var transactionItem = new TransactionItem
@@ -115,6 +125,13 @@ namespace POS1.Controllers
                     Subtotal = orderItem.Subtotal  // Subtotal from OrderItems
                 };
                 _context.TransactionItems.Add(transactionItem);
+
+                // Prepare stock update data
+                stockUpdates.Add(new ProductStockUpdateModel
+                {
+                    ProductId = orderItem.ProductId,
+                    Quantity = orderItem.Quantity
+                });
             }
 
             // Create a Payment record for the transaction
@@ -129,6 +146,17 @@ namespace POS1.Controllers
 
             // Save all changes to the database
             _context.SaveChanges();
+
+            // Call Inventory Service to update stock
+            try
+            {
+                var inventoryService = new InventoryService(new HttpClient());
+                inventoryService.UpdateProductStockAsync(stockUpdates).Wait();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to update product stock: {ex.Message}");
+            }
 
             TempData["ShowPopup"] = true; // Indicate that the popup should be shown
             TempData["PopupMessage"] = "Order has been successfully confirmed!";

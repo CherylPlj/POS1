@@ -6,21 +6,26 @@
 
 }
 
-<div class= "container">
+<div class= "fade-in">
+    @{
+        var successMessage = TempData["SuccessMessage"];
+        var errorMessage = TempData["ErrorMessage"];
+    }
+
 
     <!-- Page Header with Go Back Icon -->
-    <div class="page-header">
-        <span>
+    <div class="d-flex align-items-center mb-4" style="width: 1000px; margin: 20px 0 0 26px;">
+        <div class="d-flex align-items-center mb-4" style="width: 1000px; margin: 20px 0 0 26px;">
             <a asp-action="ProfilePage" class="nav-link" title="Go Back">
-                <i class="bx bx-arrow-back" style="color:black;"></i>
+                <i class="fa-solid fa-arrow-left fs-3" style="color:black; margin-right:10px;"></i>
             </a>
-            <h1 class="fw-bold" style="color: #06d6a0">Edit Profile</h1>
-        </span>
+            <h1 class="mb-0 fw-bold" style="color: #073b4c;">Edit Profile</h1>
+        </div>
     </div>
 
     <!-- Centered Form in a Card -->
     <div class="container" style="margin-bottom: 80px;">
-        <div class="card" style="width: 100%; max-width: 750px;">
+        <div class="card shadow-sm p-4" style="width: 100%; max-width: 750px; border-radius: 12px; background-color: #ffffff;">
             <div class="card-body">
                 <form asp-action="UpdateProfile" method="post">
                     <!-- Full Name -->
@@ -50,14 +55,14 @@
                     <!-- Submit Button -->
                     <div class="text-center">
                         <button type="submit" class="btn btn-success btn-lg px-5" style="border-radius: 25px; font-size: 1.1rem;">
-                            <i class="bx bxs-save"></i> Save Changes
+                            <i class="fa-solid fa-check-circle me-2"></i> Save Changes
                         </button>
                     </div>
 
                     <!-- Cancel Button -->
                     <div class="text-center">
                         <a asp-action="ProfilePage" class="btn btn-secondary btn-lg px-5" style="border-radius: 25px; font-size: 1.1rem;">
-                            <i class="bx bxs-cancel"></i> Cancel
+                            <i class="fa-solid fa-times-circle me-2"></i> Cancel
                         </a>
                     </div>
                 </form>
@@ -65,19 +70,7 @@
         </div>
     </div>
 </div>
-@* @if (TempData["ErrorMessage"] != null) *@
-@* { *@
-@*     <div class="alert alert-danger mt-3 text-center"> *@
-@*         @TempData["ErrorMessage"] *@
-@*     </div> *@
-@* } *@
 
-@* @if (TempData["SuccessMessage"] != null) *@
-@* { *@
-@*     <div class="alert alert-success mt-3 text-center"> *@
-@*         @TempData["SuccessMessage"] *@
-@*     </div> *@
-@* } *@
 
 <!-- Fade-In Animation Script -->
 <script>
@@ -98,8 +91,10 @@
 <!-- Custom Styling -->
 <style>
     body {
+        background-color: #f4f6f9;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     
+        width: auto 1000px;
+        margin-bottom: 50px;
     }
 
     h1 {
@@ -115,7 +110,7 @@
         background-color: #F9F9F9;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        width: 750px;
+        /* width: 750px; */
         height: 100%;
         margin-top: 12px;
     }
@@ -124,7 +119,7 @@
         padding: 20px;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        /* justify-content: space-between; */
 
     }
 
@@ -132,6 +127,8 @@
         border: 1px solid #ced4da;
         border-radius: 8px;
         font-size: 1rem;
+        color: #333;
+        /* width: 90%; */
     }
 
         .form-control:focus {
@@ -171,8 +168,8 @@
         border-radius: 25px;
         font-size: 14px;
         font-weight: 400;
-        width: 200px;
-        height: 40px;
+        width: 300px;
+        height: 50px;
         text-align: center;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     }

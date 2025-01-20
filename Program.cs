@@ -4,11 +4,20 @@ using POS1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Inventory service
+// Ecommerce service
 builder.Services.AddHttpClient<EcommerceService>(client =>
 {
     client.BaseAddress = new Uri("https://gizmodeecommerce.azurewebsites.net/"); // Replace with Ecommerce System URL
 });
+
+
+// Inventory service
+builder.Services.AddHttpClient<InventoryService>(client =>
+{
+    client.BaseAddress = new Uri("https://gizmodeinventorysystem.azurewebsites.net/"); // Replace with Ecommerce System URL
+});
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

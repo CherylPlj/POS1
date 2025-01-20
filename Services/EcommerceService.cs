@@ -5,68 +5,69 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using POS1.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace POS1.Services
 {
     public class EcommerceService
     {
         private readonly HttpClient _httpClient;
-        private readonly ApplicationDbContext _context;
 
-        public EcommerceService(HttpClient httpClient, ApplicationDbContext context)
+        public EcommerceService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _context = context;
+
         }
 
-    }
-}
+        // Get order items from the Ecommerce of the order with the order status of "Order Confirmed".
+        // THe orders with "Order Confirmed" status are the orders with PaymentMethod of either Ewallet or Bank
 
-
-        /*public async Task<bool> UpdateProductInEcommerceSystem(Product product)
+        public async Task<List<OrderItemCopy>> GetOrderItems(int orderId)
         {
             try
             {
-                // Inventory1 API endpoint for editing product details
-                string inventoryApiUrl = "api/ProductsApi/EditProductFromInventory";
+                // Call the Ecommerce API endpoint to get the order items
+                var response = await _httpClient.GetAsync($"api/OrdersApi/GetAllOrderItems/{orderId}");
 
-                // Send the product details as JSON to the Inventory1 API
-                // It used "PostAsJsonAsync" because product is not yet in JSON format, it is still an object or instance of Product model
-                // Thus, there is a word "Json" in "PostAsJsonAsync"
-                // But if product is already in JSON format, then it can use "PostAsync" instead
-                // Observe the productDto sample below. Go there and read my comment.
-                var response = await _httpClient.PostAsJsonAsync(inventoryApiUrl, product);
+                // Ensure the request was successful
+                response.EnsureSuccessStatusCode();
 
-                // Check if the request was successful
-                return response.IsSuccessStatusCode;
+                // Deserialize the response content into a list of OrderItemCopy
+                var orderItems = await response.Content.ReadFromJsonAsync<List<OrderItemCopy>>();
+
+                // Return the list or an empty list if the response is null
+                return orderItems ?? new List<OrderItemCopy>();
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
-                // Log the exception (implement a logging mechanism as needed)
-                Console.WriteLine($"Error updating product in EcommerceSystem: {ex.Message}");
-                return false;
+                // Log the error (optional) and rethrow or handle as needed
+                Console.WriteLine($"An error occurred while fetching order items: {ex.Message}");
+                throw;
             }
-        */
-            // The productDto is also an object or instance of ProductDto model
+        }
 
-            // var productDto = new
-            // {
-            //     Id = product.Id,
-            //     Name = product.Name,
-            //     Description = product.Description,
-            //     Price = product.Price,
-            //     Color = product.Color,
-            //     Category = product.Category
-            // };
 
-            // IN ORDER TO CONVERT THE productDto INTO JSON FORMAT, the following code is used below:
 
-            // var jsonContent = JsonSerializer.Serialize(productDto);
-            // var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        public async Task UpdateOrderInEcommerce(OrderRefundModel model)
+        {
 
-            // THE content is a JSON content that contains the productDto in JSON format, therefore it will be the one to be sent to the Inventory1 API
+            //var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
 
-            // var response = await _httpClient.PostAsync("https://Inventory1.example.com/api/products/edit", content);
+            // Sending the HTTP POST request to update the order
+            var response = await _httpClient.PostAsJsonAsync("api/OrdersApi/UpdateOrder", model);
 
-            // return response.IsSuccessStatusCode;
-   
+            if (response.IsSuccessStatusCode)
+            {
+                // Successfully updated the order in Ecommerce
+                // You can handle logging or additional logic here if needed
+            }
+            else
+            {
+                // Log or handle the failure case
+                throw new Exception("Failed to update the order in Ecommerce.");
+            }
+        }
+
+
+    }
+}
