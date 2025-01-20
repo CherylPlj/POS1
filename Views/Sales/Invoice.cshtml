@@ -21,15 +21,15 @@
             text-align: center;
         }
 
-            .container-1 h1 {
-                font-size: 24px;
-                margin: 5px 0;
-            }
+        .container-1 h1 {
+            font-size: 24px;
+            margin: 5px 0;
+        }
 
-            .container-1 p {
-                margin: 3px 0;
-                font-size: 14px;
-            }
+        .container-1 p {
+            margin: 3px 0;
+            font-size: 14px;
+        }
 
         .container-2 {
             display: flex;
@@ -37,18 +37,18 @@
             align-items: center;
         }
 
-            .container-2 .row-1 {
-                text-align: center;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
+        .container-2 .row-1 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-            .container-2 .row-2 {
-                display: flex;
-                justify-content: space-between;
-                width: 100%;
-                padding: 0 20px;
-            }
+        .container-2 .row-2 {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 20px;
+        }
 
         .row-2 .column {
             display: flex;
@@ -69,18 +69,18 @@
             text-align: right;
         }
 
-            .container-3 p {
-                margin: 3px 0;
-            }
+        .container-3 p {
+            margin: 3px 0;
+        }
 
         .container-4 {
             text-align: center;
             font-size: 14px;
         }
 
-            .container-4 p {
-                margin: 3px 0;
-            }
+        .container-4 p {
+            margin: 3px 0;
+        }
 
         hr {
             border: none;
@@ -116,7 +116,7 @@
             border-radius: 5px;
             cursor: pointer;
             position: fixed;
-            left: 80%;
+            left: 80%;  
         }
 
             #pdf-button:hover {
@@ -160,7 +160,7 @@
                         <p><strong>Items:</strong></p>
                         @foreach (var item in Model.Items)
                         {
-                            <p>@item</p>
+                                <p>@item</p>
                         }
                         @* <p>@Model.ItemCount Items</p> *@
                     </div>
@@ -172,7 +172,7 @@
                         <p><strong>Subtotal:</strong></p>
                         @foreach (var subtotal in Model.Subtotals)
                         {
-                            <p>₱@subtotal.ToString("N2")</p>
+                                <p>₱@subtotal.ToString("N2")</p>
                         }
                         @* <p><strong>Total: ₱@Model.TotalAmount.ToString("N2")</strong></p> *@
                     </div>

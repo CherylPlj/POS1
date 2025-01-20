@@ -146,7 +146,7 @@ namespace YourApp.Controllers
 
 
         [HttpPost]
-        public IActionResult DeleteOrder(int id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
             // Fetch the order by ID
             var order = _context.Orders.FirstOrDefault(o => o.OrderId == id);
@@ -165,6 +165,9 @@ namespace YourApp.Controllers
 
             // Save changes to the database
             _context.SaveChanges();
+
+            // Call the service to cancel the order in the Ecommerce system
+            await _ecommerceService.CancelOrderInEcommerce(id);
 
             // Redirect back to the Orders view
             return RedirectToAction("Orders");

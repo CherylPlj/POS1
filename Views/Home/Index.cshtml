@@ -1,122 +1,271 @@
-﻿@model POS1.Models.DashboardMetricsViewModel
-@{
-	ViewData["Title"] = "Home Page";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@model POS1.Models.DashboardViewModel
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    /* Styling for each card */
+    .card {
+        background-color: white;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+    }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #666;
+        }
+
+    /* Ensure that chart containers are aligned properly and have fixed width/height */
+    .chart-container {
+        background-color: white;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+        box-sizing: border-box;
+        height: 700px; /* Set fixed height for each chart */
+        width: 45%; /* Set width to ensure it fits in a row */
+    }
+
+    canvas {
+        width: 100% !important; /* Ensure canvas fills the container */
+        height: 100% !important; /* Ensure canvas fills the container */
+    }
+</style>
 
 
-<!--<section id="container">-->
-<div class="head-title">
-	<div class="left">
-		<h1>Dashboard</h1>
-		<ul class="breadcrumb">
-			<li>
-				<a href="#">Dashboard</a>
-			</li>
-			<li><i class='bx bx-chevron-right'></i></li>
-			<li>
-				<a class="active" href="#">Home</a>
-			</li>
-		</ul>
-	</div>
-	<a href="#" class="btn-download">
-		<i class='bx bxs-cloud-download'></i>
-		<span class="text">Download PDF</span>
-	</a>
-</div>
-<!--Display Key Metrics-->
-<div class="row">
-	<ul class="box-info">
-		<li>
-			<i class='bx bxs-calendar-check'></i>
-			<span class="text">
-				<h3>@Model.DailySales</h3> <!--Count New Orders-->
-				<p>Orders Today</p>
-			</span>
-		</li>
-		<li>
-			<i class='bx bxs-group'></i>
-			<span class="text">
-				<h3>@Model.CustomerCount</h3> <!--Count Customers-->
-				<p>Customers</p>
-			</span>
-		</li>
-		<li>
-			<i class='bx bxs-dollar-circle'></i>
-			<span class="text">
-				<h3>@Model.TotalSales</h3>
-				<p>Total Sales</p> <!--Count Total Sales-->
-			</span>
-		</li>
-	</ul>
-</div>
+<body>
 
-<div class="row">
+    <div class="container">
+        <!-- Row 1: Sales/Transactions Today, This Week, This Month, This Year -->
+        <div class="row">
+            <div class="card">
+                <h3>Sales Today</h3>
+                <p id="salesToday">₱@String.Format("{0:n}", Model.SalesToday)</p>
 
-	<ul class="box-info">
-		<li>
-			<div class="col-md-3">
-				<h4>Sales Summary</h4>
-				<ul>
-					@* <li>Daily: @Model.DailySales</li> *@
-					<li>Weekly: @Model.WeeklySales</li>
-					<li>Monthly: @Model.MonthlySales</li>
-					<li>Yearly: @Model.YearlySales</li>
-					@* <li>Total: @Model.TotalSales</li> *@
-				</ul>
-			</div>
-		</li>
+            </div>
+            <div class="card">
+                <h3>Sales This Week</h3>
+                <p id="salesThisWeek">₱@String.Format("{0:n}", Model.SalesThisWeek)</p>
 
-		<li>
-			<div class="col-md-3">
-				<h4>Top Products</h4>
-				<ul>
-					@foreach (var product in Model.TopProducts)
-					{
-						//<li>@product.Name</li>
-					}
-				</ul>
-			</div>
-		</li>
+            </div>
+            <div class="card">
+                <h3>Sales This Month</h3>
+                <p id="salesThisMonth">₱@String.Format("{0:n}", Model.SalesThisMonth)</p>
 
-		<li>
-			<div class="col-md-3">
-				<h4>Top Categories</h4>
-				<ul>
-					@foreach (var category in Model.TopCategories)
-					{
-						<li>@category</li>
-					}
-				</ul>
-			</div>
-		</li>
-	</ul>
+            </div>
+            <div class="card">
+                <h3>Sales This Year</h3>
+                <p id="salesThisYear">₱@String.Format("{0:n}", Model.SalesThisYear)</p>
 
-	<div class="row">
-		<ul class="box-info">
-			<li>
-				<div class="col-md-3">
-					<h4>Payment Methods</h4>
-					<ul>
-						@foreach (var method in Model.PaymentMethods)
-						{
-							<li>@method</li>
-						}
-					</ul>
-				</div>
-			</li>
+            </div>
+        </div>
 
-			<li>
-				<div class="col-md-12">
-					<h4>Order Statuses</h4>
-					<ul>
-						@foreach (var status in Model.OrderStatuses)
-						{
-							<li>@status</li>
-						}
-					</ul>
-				</div>
-			</li>
-	</div>
-	</ul>
+        <!-- Row 2: Number of Orders Per Order Status -->
+        <div class="row">
+            <div class="chart-container">
+                <h3>Orders Per Order Status Today</h3>
+                <canvas id="orderStatusTodayChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Orders Per Order Status This Month</h3>
+                <canvas id="orderStatusMonthChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Row 3: Top Selling Products and Payment Methods -->
+        <div class="row">
+            <div class="chart-container">
+                <h3>Top 5 Best-Selling Products</h3>
+                <canvas id="topProductsChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Payment Methods</h3>
+                <canvas id="paymentMethodsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Row 4: Top Categories by Stock -->
+        <div class="row">
+            <div class="chart-container">
+                <h3>Top 8 Categories by Stock</h3>
+                <canvas id="topCategoriesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Orders Per Order Status Today (Pie Chart)
+        var orderStatusTodayChartCtx = document.getElementById('orderStatusTodayChart').getContext('2d');
+        var orderStatusTodayChart = new Chart(orderStatusTodayChartCtx, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.OrdersStatusToday.Select(x => x.Status))),
+                datasets: [{
+                    label: 'Orders Per Status Today',
+                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.OrdersStatusToday.Select(x => x.Count))),
+                    backgroundColor: ['#caf0f8', '#588157', '#fb6f92', '#43291f', '#ffd6ff'],
+                    borderColor: '#14213d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // Orders Per Order Status This Month (Pie Chart)
+        var orderStatusMonthChartCtx = document.getElementById('orderStatusMonthChart').getContext('2d');
+        var orderStatusMonthChart = new Chart(orderStatusMonthChartCtx, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.OrdersStatusMonth.Select(x => x.Status))),
+                datasets: [{
+                    label: 'Orders Per Status This Month',
+                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.OrdersStatusMonth.Select(x => x.Count))),
+                    backgroundColor: ['#caf0f8', '#588157', '#fb6f92', '#43291f', '#ffd6ff'],
+                    borderColor: '#14213d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // Top Selling Products (Bar Chart)
+        var topProductsChartCtx = document.getElementById('topProductsChart').getContext('2d');
+        var topProductsChart = new Chart(topProductsChartCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopSellingProducts.Select(x => x.Product))),
+                datasets: [{
+                    label: 'Top 5 Best-Selling Products',
+                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopSellingProducts.Select(x => x.Quantity))),
+                    backgroundColor: '#ff9f1c',
+                    borderColor: '#14213d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // Payment Methods (Pie Chart)
+        var paymentMethodsChartCtx = document.getElementById('paymentMethodsChart').getContext('2d');
+        var paymentMethodsChart = new Chart(paymentMethodsChartCtx, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.PaymentMethods.Select(x => x.Method))),
+                datasets: [{
+                    label: 'Payment Methods',
+                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.PaymentMethods.Select(x => x.Count))),
+                    backgroundColor: ['#caf0f8', '#588157', '#fb6f92', '#43291f', '#ffd6ff'],
+                    borderColor: '#14213d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // Top Categories (Bar Chart)
+        var topCategoriesChartCtx = document.getElementById('topCategoriesChart').getContext('2d');
+        var topCategoriesChart = new Chart(topCategoriesChartCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopCategories.Select(x => x.Category))),
+                datasets: [{
+                    label: 'Top 8 Categories by Stock',
+                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TopCategories.Select(x => x.QuantitySold))),
+                    backgroundColor: '#ff9f1c',
+                    borderColor: '#14213d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+    </script>
+
+
+
+</body>
+</html>
+
+
