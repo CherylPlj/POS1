@@ -76,7 +76,8 @@
                         <tr>
                             <td>@transaction.TransactionId</td>
                             <td>@transaction.CustomerName</td>
-                            <td>@transaction.Amount.ToString("C")</td>
+                            <td>₱@String.Format("{0:n}", transaction.Amount)</td>
+                            <!-- <td> transaction.Amount.ToString("C")</td> --> 
                             <td>@transaction.OrderNumber</td>
                             <td>@transaction.CashierName</td>
                             <td>@transaction.SaleDate.ToString("yyyy-MM-dd")</td>

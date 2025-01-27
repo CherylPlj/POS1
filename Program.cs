@@ -14,11 +14,12 @@ builder.Services.AddHttpClient<EcommerceService>(client =>
 // Inventory service
 builder.Services.AddHttpClient<InventoryService>(client =>
 {
-    client.BaseAddress = new Uri("https://gizmodeinventorysystem.azurewebsites.net/"); // Replace with Ecommerce System URL
+    client.BaseAddress = new Uri("https://gizmodeinventorysystem.azurewebsites.net/"); // Replace with Inventory System URL
 });
 
-
 // Add services to the container.
+// Add Localizatiom - PH
+builder.Services.AddLocalization();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -52,6 +53,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
+app.UseRequestLocalization("en-PH");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

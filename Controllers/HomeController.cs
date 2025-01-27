@@ -206,6 +206,8 @@ namespace POS1.Controllers
         {
             // Clear session or authentication cookies
             HttpContext.SignOutAsync();
+            HttpContext.Session.Clear(); // Clear session data
+            HttpContext.Response.Cookies.Delete(".AspNetCore.Cookies"); // Delete authentication cookies
             return RedirectToAction("LoginPage", "Login");
         }
 

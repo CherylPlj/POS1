@@ -100,7 +100,7 @@ namespace YourApp.Controllers
             {
                 TempData["PopupMessage"] = "Order not found.";
                 TempData["ShowPopup"] = true;
-                return RedirectToAction("Index");
+                return RedirectToAction("orders");
             }
 
             // Update the order status and created date
@@ -113,7 +113,7 @@ namespace YourApp.Controllers
             {
                 TempData["PopupMessage"] = "Transaction not found.";
                 TempData["ShowPopup"] = true;
-                return RedirectToAction("Index");
+                return RedirectToAction("orders");
             }
 
             // Update the payment status
