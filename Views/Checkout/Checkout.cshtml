@@ -3,6 +3,8 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
+@using POS1.Models;
+  @* @model POS1.Models.CheckoutItemViewModel *@
 
 <div class="head-title">
 	<div class="left">
@@ -34,7 +36,7 @@
 						<th>Price</th>
 						<th>Quantity</th>
 						<th>Subtotal</th>
-						<th>Remove</th>
+						@* <th>Remove</th> *@
 					</tr>
 				</thead>
 				<tbody>
@@ -45,13 +47,13 @@
 							<td>@item.Price.ToString("C")</td>
 							<td>@item.Quantity</td>
 							<td>@item.Subtotal.ToString("C")</td>
-							<td>
+							@*<td>
 								<button onclick="removeItem('@item.ProductName')">
 									<a href="#" class="btn-delete">
 										<i class='bx bxs-trash'></i> <!-- Delete -->
 									</a>
 								</button>
-							</td>
+							</td>*@
 						</tr>
 					}
 				</tbody>
